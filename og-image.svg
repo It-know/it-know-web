@@ -1,0 +1,90 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo degradado -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D1B2A;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#0a2a50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0b3360;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#50E3C2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7ff0db;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+
+  <!-- Grid pattern sutil -->
+  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(80,227,194,0.06)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Glow decorativo -->
+  <ellipse cx="950" cy="-50" rx="350" ry="350" fill="url(#accent-gradient)" opacity="0.15" filter="url(#glow)"/>
+
+  <!-- Logo placeholder (reemplaza con tu logo real) -->
+  <g transform="translate(120, 140)">
+    <!-- Círculo contenedor logo -->
+    <circle cx="80" cy="80" r="80" fill="rgba(255,255,255,0.05)" stroke="rgba(80,227,194,0.3)" stroke-width="2"/>
+    <!-- Icono genérico de tecnología/escudo -->
+    <g transform="translate(80, 80)" fill="none" stroke="url(#accent-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 -45 L0 45 M-30 -15 L30 -15 M-30 15 L30 15 M-45 0 L45 0"/>
+      <circle r="25" stroke-dasharray="4 4"/>
+    </g>
+    <!-- Texto "IT-Know" pequeño bajo el logo -->
+    <text x="80" y="185" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" letter-spacing="0.5px">IT-Know</text>
+  </g>
+
+  <!-- Contenido principal -->
+  <g transform="translate(320, 140)">
+    <!-- Tag "Consultoría Tecnológica" -->
+    <rect x="0" y="0" width="380" height="44" rx="22" fill="rgba(80,227,194,0.12)" stroke="rgba(80,227,194,0.3)" stroke-width="1"/>
+    <text x="190" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#50E3C2" letter-spacing="0.8px" text-transform="uppercase">Consultoría Tecnológica</text>
+
+    <!-- Título principal -->
+    <text x="0" y="110" font-family="Inter, system-ui, sans-serif" font-size="56" font-weight="800" fill="#FFFFFF" line-height="1.1" letter-spacing="-1px">
+      <tspan x="0" dy="0">IT-Know</tspan>
+      <tspan x="0" dy="64">| Consultoría</tspan>
+      <tspan x="0" dy="64">Tecnológica</tspan>
+    </text>
+
+    <!-- Línea decorativa -->
+    <line x1="0" y1="310" x2="180" y2="310" stroke="url(#accent-gradient)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Tagline -->
+    <text x="0" y="360" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="400" fill="rgba(255,255,255,0.85)" line-height="1.5">
+      <tspan x="0" dy="0">Cloud, DevOps,</tspan>
+      <tspan x="0" dy="36">Seguridad y Desarrollo Web</tspan>
+    </text>
+
+    <!-- Badge Pymes/Startups -->
+    <g transform="translate(0, 460)">
+      <rect x="0" y="0" width="280" height="50" rx="25" fill="rgba(80,227,194,0.1)" stroke="rgba(80,227,194,0.25)" stroke-width="1"/>
+      <text x="140" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="600" fill="#50E3C2">Para Pymes y Startups</text>
+    </g>
+  </g>
+
+  <!-- Elementos decorativos esquinas -->
+  <!-- Esquina superior derecha -->
+  <g opacity="0.08">
+    <rect x="1050" y="50" width="2" height="120" fill="#50E3C2"/>
+    <rect x="1050" y="50" width="120" height="2" fill="#50E3C2"/>
+  </g>
+  <!-- Esquina inferior izquierda -->
+  <g opacity="0.08">
+    <rect x="50" y="460" width="2" height="120" fill="#50E3C2"/>
+    <rect x="50" y="578" width="120" height="2" fill="#50E3C2"/>
+  </g>
+
+  <!-- URL abajo derecha -->
+  <text x="1150" y="595" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500" fill="rgba(255,255,255,0.4)">it-know.com</text>
+</svg>

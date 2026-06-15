@@ -1,0 +1,15 @@
+# robots.txt para IT-Know
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://it-know.com/sitemap.xml
+
+# Crawl-delay opcional (descomenta si servidor lento)
+# Crawl-delay: 10
+
+# Bloquear áreas irrelevantes (si existieran)
+# Disallow: /admin/
+# Disallow: /api/
+# Disallow: /*.json$
+# Disallow: /*.xml$
