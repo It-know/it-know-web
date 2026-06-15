@@ -1,21 +1,20 @@
-name = "itknow-contact-form"
+name = "it-know-web"
 main = "worker-form.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 # KV namespace para rate limiting
+# CREA PRIMERO: wrangler kv:namespace create "RATE_LIMIT_KV"
+# Y: wrangler kv:namespace create "RATE_LIMIT_KV" --preview
+# LUEGO REEMPLAZA LOS IDs DE ABAJO:
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Reemplaza tras: wrangler kv:namespace create "RATE_LIMIT_KV"
-preview_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Reemplaza tras: wrangler kv:namespace create "RATE_LIMIT_KV" --preview
+id = "7f3204f0cb7d4c0d9b22e3323bf2988a"
+preview_id = "b18451a346674523b27d541275580692"
 
 # Variables de entorno (secrets - NO commitear valores reales)
+# CONFIGURA EN DASHBOARD: Workers & Pages → it-know-web → Settings → Variables
+# O: wrangler secret put SENDGRID_API_KEY
+# O: wrangler secret put TURNSTILE_SECRET_KEY
 [vars]
-# SENDGRID_API_KEY = "SG.xxxxx"  # Configura via: wrangler secret put SENDGRID_API_KEY
-# TURNSTILE_SECRET_KEY = "0x4AAAAAAA..."  # Configura via: wrangler secret put TURNSTILE_SECRET_KEY
-
-# Rutas
-[triggers]
-routes = [
-  { pattern = "it-know.com/api/contact", zone_name = "it-know.com" }
-]
+# NO PONGAS VALORES REALES AQUÍ - USA SECRETS EN DASHBOARD/WRANGLER
