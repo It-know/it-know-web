@@ -6,6 +6,14 @@
 
 export default {
   async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // Este Worker solo debe procesar el endpoint del formulario. Si por error
+    // queda asignado a it-know.com/*, dejamos pasar la web estatica al origen.
+    if (url.pathname !== '/api/contact') {
+      return fetch(request);
+    }
+
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': 'https://it-know.com',
