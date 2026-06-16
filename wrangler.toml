@@ -6,8 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 # Solo enrutar el endpoint del formulario. Evita que el Worker intercepte
 # la pagina principal y devuelva 405 a las visitas normales del sitio.
 routes = [
-  { pattern = "it-know.com/api/contact", zone_name = "it-know.com" },
-  { pattern = "www.it-know.com/api/contact", zone_name = "it-know.com" }
+  { pattern = "api.it-know.com/api/contact", zone_name = "it-know.com" }
 ]
 
 # KV namespace para rate limiting

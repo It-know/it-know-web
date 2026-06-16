@@ -1649,7 +1649,7 @@
     const formData = new FormData(form);
 
     try {
-      const resp = await fetch('/api/contact', {
+      const resp = await fetch('https://api.it-know.com/api/contact', {
         method: 'POST',
         body: formData,
         headers: { 'Accept': 'application/json' },
