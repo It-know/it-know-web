@@ -7,6 +7,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const origin = request.headers.get('Origin');
 
     // Este Worker solo debe procesar el endpoint del formulario. Si por error
     // queda asignado a it-know.com/*, dejamos pasar la web estatica al origen.
@@ -14,13 +15,7 @@ export default {
       return fetch(request);
     }
 
-    // CORS headers
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': 'https://it-know.com',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '86400',
-    };
+    const corsHeaders = buildCorsHeaders(origin);
 
     // Preflight
     if (request.method === 'OPTIONS') {
@@ -65,15 +60,13 @@ export default {
       return json({ success: true, message: 'Mensaje enviado' }, 200, corsHeaders);
     }
 
-    // Turnstile verification
+    // Turnstile verification is optional until the widget is reconfigured.
     const turnstileToken = formData.get('cf-turnstile-response');
-    if (!turnstileToken) {
-      return json({ error: 'Verificación de seguridad requerida' }, 400, corsHeaders);
-    }
-
-    const turnstileValid = await verifyTurnstile(env, turnstileToken, ip);
-    if (!turnstileValid) {
-      return json({ error: 'Verificación de seguridad fallida. Intenta de nuevo.' }, 400, corsHeaders);
+    if (turnstileToken) {
+      const turnstileValid = await verifyTurnstile(env, turnstileToken, ip);
+      if (!turnstileValid) {
+        return json({ error: 'Verificación de seguridad fallida. Intenta de nuevo.' }, 400, corsHeaders);
+      }
     }
 
     // Validación servidor
@@ -141,27 +134,27 @@ User-Agent: ${request.headers.get('User-Agent') || 'unknown'}
 };
 
 async function sendEmail(env, { to, subject, text, replyTo }) {
-  // OPCIÓN A: SendGrid (reemplaza con tu proveedor)
-  if (!env.SENDGRID_API_KEY) {
-    console.warn('SENDGRID_API_KEY no configurado');
+  if (!env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY no configurado');
     return false;
   }
 
-  const apiKey = env.SENDGRID_API_KEY;
-  const fromEmail = 'noreply@it-know.com'; // Debe estar verificado en SendGrid
-
+  const apiKey = env.RESEND_API_KEY;
+  const fromEmail = env.RESEND_FROM_EMAIL || 'IT-Know <noreply@it-know.com>';
   const payload = {
-    personalizations: [{
-      to: [{ email: to }],
-      subject,
-      ...(replyTo && { reply_to: { email: replyTo } }),
-    }],
-    from: { email: fromEmail, name: 'IT-Know Web' },
-    content: [{ type: 'text/plain', value: text }],
+    from: fromEmail,
+    to,
+    subject,
+    text,
+    html: toHtml(text),
   };
 
+  if (replyTo) {
+    payload.reply_to = replyTo;
+  }
+
   try {
-    const resp = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    const resp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -169,7 +162,12 @@ async function sendEmail(env, { to, subject, text, replyTo }) {
       },
       body: JSON.stringify(payload),
     });
-    return resp.ok;
+    if (!resp.ok) {
+      const errorBody = await resp.json().catch(() => null);
+      console.error('Resend error:', resp.status, errorBody);
+      return false;
+    }
+    return true;
   } catch (err) {
     console.error('Email error:', err);
     return false;
@@ -206,4 +204,33 @@ async function verifyTurnstile(env, token, ip) {
     console.error('Turnstile verification error:', err);
     return false;
   }
+}
+
+function buildCorsHeaders(origin) {
+  const allowedOrigins = new Set([
+    'https://it-know.com',
+    'https://www.it-know.com',
+    'http://localhost:8787',
+    'http://127.0.0.1:8787',
+  ]);
+
+  const allowOrigin = allowedOrigins.has(origin) ? origin : 'https://it-know.com';
+
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    Vary: 'Origin',
+  };
+}
+
+function toHtml(text) {
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+
+  return `<!doctype html><html><body style="font-family:Arial,sans-serif;line-height:1.5;color:#111">${escaped}</body></html>`;
 }

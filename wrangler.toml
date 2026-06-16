@@ -1,6 +1,6 @@
 name = "it-know-web"
 main = "worker-form.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2026-06-16"
 compatibility_flags = ["nodejs_compat"]
 
 # Solo enrutar el endpoint del formulario. Evita que el Worker intercepte
@@ -21,7 +21,9 @@ preview_id = "b18451a346674523b27d541275580692"
 
 # Variables de entorno (secrets - NO commitear valores reales)
 # CONFIGURA EN DASHBOARD: Workers & Pages → it-know-web → Settings → Variables
-# O: wrangler secret put SENDGRID_API_KEY
+# O: wrangler secret put RESEND_API_KEY
+# Sender verificado en Resend:
+# RESEND_FROM_EMAIL = "IT-Know <noreply@it-know.com>"
 # O: wrangler secret put TURNSTILE_SECRET_KEY
 [vars]
-# NO PONGAS VALORES REALES AQUÍ - USA SECRETS EN DASHBOARD/WRANGLER
+RESEND_FROM_EMAIL = "IT-Know <noreply@it-know.com>"

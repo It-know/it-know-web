@@ -252,9 +252,6 @@
     }
   </script>
 
-  <!-- Cloudflare Turnstile (invisible CAPTCHA) -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
   <style>
     /* ===================== RESET & BASE ===================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1387,11 +1384,7 @@
             <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos brevemente tu proyecto o necesidad…" required minlength="20" maxlength="5000"></textarea>
           </div>
 
-          <!-- Cloudflare Turnstile (invisible) -->
-          <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITEKEY" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-theme="light" style="display:none;"></div>
-          <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response" />
-
-          <button type="submit" class="form-submit" id="formSubmit" disabled>Enviar mensaje →</button>
+          <button type="submit" class="form-submit" id="formSubmit">Enviar mensaje →</button>
           <p id="formStatus" class="form-status" style="margin-top:12px;display:none;"></p>
         </form>
       </div>
@@ -1641,46 +1634,11 @@
     });
   });
 
-  /* --- Formulario de contacto (Cloudflare Worker + Turnstile) --- */
-  let turnstileToken = null;
-
-  function onTurnstileSuccess(token) {
-    turnstileToken = token;
-    const hiddenInput = document.getElementById('cf-turnstile-response');
-    if (hiddenInput) hiddenInput.value = token;
-    const submitBtn = document.getElementById('formSubmit');
-    if (submitBtn) submitBtn.disabled = false;
-  }
-
-  function onTurnstileError() {
-    turnstileToken = null;
-    const hiddenInput = document.getElementById('cf-turnstile-response');
-    if (hiddenInput) hiddenInput.value = '';
-    const submitBtn = document.getElementById('formSubmit');
-    if (submitBtn) submitBtn.disabled = true;
-  }
-
-  function onTurnstileExpired() {
-    turnstileToken = null;
-    const hiddenInput = document.getElementById('cf-turnstile-response');
-    if (hiddenInput) hiddenInput.value = '';
-    const submitBtn = document.getElementById('formSubmit');
-    if (submitBtn) submitBtn.disabled = true;
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     const form = e.target;
     const submitBtn = document.getElementById('formSubmit');
     const statusEl = document.getElementById('formStatus');
-
-    // Verificar token Turnstile
-    if (!turnstileToken) {
-      statusEl.textContent = '❌ Verificación de seguridad pendiente. Intenta de nuevo.';
-      statusEl.style.color = '#ff6b6b';
-      statusEl.style.display = 'block';
-      return;
-    }
 
     // Deshabilitar botón
     submitBtn.disabled = true;
@@ -1691,7 +1649,7 @@
     const formData = new FormData(form);
 
     try {
-      const resp = await fetch('https://it-know.com/api/contact', {
+      const resp = await fetch('/api/contact', {
         method: 'POST',
         body: formData,
         headers: { 'Accept': 'application/json' },
@@ -1703,11 +1661,6 @@
         statusEl.textContent = '✅ Mensaje enviado correctamente. Te responderemos en < 24h.';
         statusEl.style.color = 'var(--teal)';
         form.reset();
-        // Reset Turnstile
-        if (window.turnstile) {
-          window.turnstile.reset();
-        }
-        turnstileToken = null;
       } else {
         statusEl.textContent = `❌ ${data.error || 'Error enviando. Intenta más tarde.'}`;
         statusEl.style.color = '#ff6b6b';
