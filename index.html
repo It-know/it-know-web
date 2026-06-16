@@ -1655,19 +1655,29 @@
         headers: { 'Accept': 'application/json' },
       });
 
-      const data = await resp.json();
+      const contentType = resp.headers.get('content-type') || '';
+      let data = null;
+
+      if (contentType.includes('application/json')) {
+        data = await resp.json();
+      } else {
+        const raw = await resp.text();
+        data = {
+          error: raw ? raw.slice(0, 220) : `El servidor respondió ${resp.status}`,
+        };
+      }
 
       if (resp.ok && data.success) {
         statusEl.textContent = '✅ Mensaje enviado correctamente. Te responderemos en < 24h.';
         statusEl.style.color = 'var(--teal)';
         form.reset();
       } else {
-        statusEl.textContent = `❌ ${data.error || 'Error enviando. Intenta más tarde.'}`;
+        statusEl.textContent = `❌ ${data.error || `Error enviando (${resp.status}). Intenta más tarde.`}`;
         statusEl.style.color = '#ff6b6b';
       }
     } catch (err) {
       console.error('Form error:', err);
-      statusEl.textContent = '❌ Error de conexión. Verifica tu internet e inténtalo de nuevo.';
+      statusEl.textContent = '❌ No se pudo conectar con el servidor del formulario.';
       statusEl.style.color = '#ff6b6b';
     }
 
